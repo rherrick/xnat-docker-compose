@@ -10,7 +10,7 @@ ADD https://bintray.com/nrgxnat/applications/download_file?file_path=xnat-web-${
 
 # Setup XNAT
 ENV TOMCAT_XNAT_FOLDER ROOT
-RUN mkdir -p $CATALINA_HOME/webapps/$TOMCAT_XNAT_FOLDER && \
+RUN rm -rf $CATALINA_HOME/webapps/* && mkdir -p $CATALINA_HOME/webapps/$TOMCAT_XNAT_FOLDER && \
     unzip -o xnat-web-*.war -d  $CATALINA_HOME/webapps/$TOMCAT_XNAT_FOLDER && \
     rm -f xnat-web-*.war
 
