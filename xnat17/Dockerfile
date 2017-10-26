@@ -1,4 +1,4 @@
-FROM tomcat:7-jre7-alpine
+FROM tomcat:7-jre8-alpine
 MAINTAINER Thomas Phil <thomas@tphil.nl>
 
 RUN apk add --no-cache postgresql-client
