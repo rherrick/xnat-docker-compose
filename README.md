@@ -21,14 +21,10 @@ This repository contains files to bootstrap XNAT deployment. The build creates f
 
 1. Clone the [xnat-docker-compose](https://github.com/NrgXnat/xnat-docker-compose) repository.
 
-```
-$ git clone https://github.com/NrgXnat/xnat-docker-compose
-$ cd xnat-docker-compose
-```
-
 2. Configurations: The default configuration is sufficient to run the deployment. The following files can be modified if you want to change the default configuration
 
     - **docker-compose.yml**: How the different containers are deployed.
+    - **build.gradle**: Gradle build configuration to allow integration of docker-ized XNAT into build workflows.
     - **postgres/XNAT.sql**: Database configuration. Mainly used to customize the database user or password. See [Configuring PostgreSQL for XNAT](https://wiki.xnat.org/documentation/getting-started-with-xnat-1-7/installing-xnat-1-7/configuring-postgresql-for-xnat).
     - **tomcat/Dockerfile**: Builds the tomcat image, into which the XNAT war will be deployed.
     - **tomcat/setenv.sh**: Tomcat's launch arguments, set through the `JAVA_OPTS` environment variable.
@@ -36,24 +32,53 @@ $ cd xnat-docker-compose
     - **tomcat/xnat-conf.properties**: XNAT database configuration properties. There is a default version
     - **prometheus/prometheus.yaml**: Prometheus configuration
 
+    There are also some default properties configured in the file **.env**:
 
-3. Download [latest XNAT WAR](https://download.xnat.org)
+    - CADVISOR_PORT 8082
+    - NGINX_PORT 80
+    - PROMETHEUS_PORT 9090
+    - TOMCAT_PORT 8081
 
-Download the latest xnat tomcat war file and place it in a webapps directory that you must create.
+    You can override these values on the command line using the **-e** flag.
+
+3. Download the [latest XNAT WAR](https://bintray.com/nrgxnat/applications/XNAT/_latestVersion):
+
+    ```
+    wget --quiet --no-cookies https://bintray.com/nrgxnat/applications/download_file?file_path=xnat-web-1.7.4.war -O webapps/xnat.war
+    ```
+
+4. Start the system:
+
+    ```
+    $ cd xnat-docker-compose
+    $ docker-compose up -d
+    ```
+
+    If you'd like to run the app-only configuration (i.e. without nginx), specify the service list, omitting **xnat-nginx**:
+
+    ```
+    $ docker-compose up -d xnat-web xnat-db prometheus cadvisor
+    ```
+
+    To override one of the default property values, specify the **-e** flag:
+
+    ```
+    $ docker-compose up -d -e TOMCAT_PORT=8888
+    ```
+
+You can also start and stop the docker-ized XNAT using Gradle:
 
 ```
-$ mkdir webapps
-$ wget --quiet --no-cookies https://api.bitbucket.org/2.0/repositories/xnatdev/xnat-web/downloads/xnat-web-1.7.4.1.war -O webapps/xnat.war
+$ ./gradlew composeUp
 ```
 
-4. Start the system
+The app-only configuration can be launched through its own task:
 
 ```
-$ docker-compose up -d
+$ ./gradlew appOnlyComposeUp
 ```
 
-Note that at this point, if you go to `localhost/xnat` you won't see a working web application. It takes upwards of a minute
-to initialize the database, and you can follow progress by reading the docker compose log of the server:
+Note that at this point, if you go to `localhost/xnat` you won't see a working web application. It takes upwards of a minute to initialize the database, and you can follow progress by reading the docker compose log of the server:
 
 ```
 docker-compose logs -f --tail=20 xnat-web
@@ -82,9 +107,7 @@ xnat-web_1    | INFO: Server startup in 84925 ms
 
 Your XNAT will soon be available at http://localhost/xnat.
 
-
 ## Troubleshooting
-
 
 ### Get a shell in a running container
 To list all containers and to get container id run
