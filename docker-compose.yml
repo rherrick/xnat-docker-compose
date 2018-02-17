@@ -1,53 +1,63 @@
 version: '2'
-services:
-    xnat-web:
-       build:
-         context: ./tomcat
-         args:
-           LOCALE: 'en_AU'
-       ports:
-        - "8081:8080"
-       volumes:
-         - ./webapps:/opt/tomcat/webapps
-         - ./plugins:/data/xnat/home/plugins
-         - /var/run/docker.sock:/var/run/docker.sock
-       expose:
-        - "8080"
-       links:
-        - xnat-db
-    xnat-db:
-       build: ./postgres
-       expose:
-         - "5432"
-       volumes:
-         - ./postgres-data:/var/lib/postgresql/data
-    xnat-nginx:
-       build: ./nginx
-       ports:
-        - "80:80"
-       expose:
-        - "80"
-       links:
-         - xnat-web
 
-    prometheus:
-       image: prom/prometheus
-       volumes:
-            - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-       command:
-            - '--config.file=/etc/prometheus/prometheus.yaml'
-       ports:
-            - '9090:9090'
-       links:
-            - cadvisor
-    cadvisor:
-        image: google/cadvisor
-        volumes:
-          - /:/rootfs:ro
-          - /var/run:/var/run:rw
-          - /sys:/sys:ro
-          - /var/lib/docker/:/var/lib/docker:ro
-        ports:
-        - "8082:8080"
-        expose:
-          - 8082
+services:
+
+  xnat-web:
+
+    build: ./tomcat
+    ports:
+      - "${TOMCAT_PORT}:8080"
+    volumes:
+      - ./webapps:/opt/tomcat/webapps
+      - ./config:/data/xnat/home/config
+      - ./logs:/data/xnat/home/logs
+      - ./plugins:/data/xnat/home/plugins
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "8080"
+    links:
+      - xnat-db
+
+  xnat-db:
+
+    build: ./postgres
+    expose:
+      - "5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  xnat-nginx:
+
+    build: ./nginx
+    ports:
+      - "${NGINX_PORT}:80"
+    expose:
+      - "80"
+    links:
+      - xnat-web
+
+  prometheus:
+
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - '${PROMETHEUS_PORT}:9090'
+    links:
+      - cadvisor
+
+  cadvisor:
+
+    image: google/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "${CADVISOR_PORT}:8080"
+    expose:
+      - ${CADVISOR_PORT}
+
