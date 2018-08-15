@@ -1,5 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
+*.log
 /.gradle
+/logs
 /plugins
-/webapps
 /postgres-data
+/webapps
