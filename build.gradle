@@ -1,5 +1,5 @@
 plugins {
-  id "com.avast.gradle.docker-compose" version "0.6.17"
+  id "com.avast.gradle.docker-compose" version "0.8.4"
 }
 
 group "org.nrg.xnat.containers"
@@ -7,7 +7,7 @@ version "1.7.5-SNAPSHOT"
 
 dockerCompose {
     appOnly {
-        startedServices = [ 'xnat-web', 'xnat-db', 'prometheus', 'cadvisor']
+        startedServices = [ "xnat-web", "xnat-db", "prometheus", "cadvisor" ]
         removeImages = "All"
     }
 }
