@@ -13,7 +13,10 @@ services:
             - ./webapps:/opt/tomcat/webapps
             - ./logs/xnat:/data/xnat/home/logs
             - ./logs/tomcat:/opt/tomcat/logs
-            - ./plugins:/data/xnat/home/plugins
+            - ${XNAT_CONFIG}:/data/xnat/home/config
+            - ${XNAT_PLUGINS}:/data/xnat/home/plugins
+            - ${XNAT_ARCHIVE}:/data/xnat/archive
+            - ${XNAT_PREARCHIVE}:/data/xnat/prearchive
             - /var/run/docker.sock:/var/run/docker.sock
         expose:
             - "8080"
