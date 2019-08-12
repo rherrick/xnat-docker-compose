@@ -1,12 +1,12 @@
-FROM manishkumr/ubuntu_jdk7_image
+FROM neurodebian:xenial
 
-MAINTAINER Manish Kumar <rishimanish123@gmail.com>
+MAINTAINER Rick Herrick <jrherrick@wustl.edu>
 
 ARG LOCALE
 
 RUN apt-get -qq update && \
     apt-get -q -y upgrade && \
-    apt-get install -y sudo curl wget locales
+    apt-get install -y sudo curl wget locales openjdk-8-jdk
 
 # Set locales
 RUN locale-gen $LOCALE.UTF-8

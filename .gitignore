@@ -2,6 +2,5 @@
 /.gradle
 /logs
 /plugins
-/postgres-data
-/webapps
+/data
 /logs
