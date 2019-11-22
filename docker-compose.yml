@@ -10,6 +10,8 @@ services:
                 LOCALE: 'en_US'
         ports:
             - "${TOMCAT_PORT}:8080"
+        networks: [activemq-services]
+        volumes: ["activemq-data:/opt/activemq/conf", "activemq-data:/data/activemq", "activemq-data:/var/log/activemq"]
         volumes:
             - ${TOMCAT_WEBAPPS}:/opt/tomcat/webapps
             - ${TOMCAT_LOGS}:/opt/tomcat/logs
@@ -40,3 +42,10 @@ networks:
   xnat-services:
     driver: bridge
 
+volumes:
+  activemq-data: {}
+  postgres-data: {}
+
+networks:
+  activemq-services:
+    driver: bridge
