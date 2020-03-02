@@ -23,31 +23,16 @@ spring.http.multipart.max-request-size=1073741824
 EOF
 fi
 
-if [ ! -f $XNAT_HOME/config/prefs-override.ini ]; then
-  cat > $XNAT_HOME/config/prefs-override.ini << PREFS
-[siteConfig]
-adminEmail=xnatselenium@gmail.com
-sessionTimeout=1 hour
-siteDescriptionType=Page
-siteDescriptionPage=/screens/cthulhu-site.vm
-siteLogoPath=/images/cthulhu.jpg
-siteUrl=http://xnatdev.xnat.org
-sessionXmlRebuilderRepeat=15000
-sessionXmlRebuilderInterval=1
-PREFS
-fi
-
 [[ "${INSTALL_PIPELINE}" == "false" ]] && { echo "Skipping pipeline installation"; exit 0; }
 
 wget --quiet https://ci.xnat.org/job/pipeline/job/xnat-pipeline-engine/lastSuccessfulReleaseBuild/artifact/build/libs/xnat-pipeline-$XNAT_VER.zip
 unzip -qq xnat-pipeline-$XNAT_VER.zip
 cd xnat-pipeline
 
-
 cat > gradle.properties << GRADLE_PROPS
 xnatUrl=http://localhost
 siteName=XNAT
-adminEmail=xnat-admin@miskatonic.edu
+adminEmail=${XNAT_EMAIL}
 smtpServer=${SMTP_HOSTNAME}
 destination=/data/xnat/pipeline
 GRADLE_PROPS

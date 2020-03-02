@@ -26,6 +26,7 @@ services:
 
   xnat-web:
     container_name: xnat-web
+    image: xnat-web
     build:
       context: ./xnat
       args:
@@ -47,6 +48,7 @@ services:
         TOMCAT_XNAT_FOLDER: ${TOMCAT_XNAT_FOLDER}
         XNAT_ROOT: ${XNAT_ROOT}
         XNAT_HOME: ${XNAT_HOME}
+        XNAT_EMAIL: ${XNAT_EMAIL}
     expose:
       - 8080
     ports:
@@ -59,7 +61,7 @@ services:
       - ./xnat-data/build:/data/xnat/build
       - ./xnat-data/logs:/data/xnat/home/logs
       - ./xnat-data/plugins:/data/xnat/home/plugins
-      - ./xnat-data/webapp:/usr/local/tomcat/webapps
+      - ./xnat-data/webapps:/usr/local/tomcat/webapps
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - xnat-db
@@ -74,7 +76,7 @@ services:
       - "8161:8161"
       - "61616:61616"
     volumes:
-      - ./activemq-data/conf:/opt/activemq/conf
+      # - ./activemq-data/conf:/opt/activemq/conf
       - ./activemq-data/data:/data/activemq
       - ./activemq-data/logs:/var/log/activemq
     environment:
@@ -95,7 +97,10 @@ services:
 
   xnat-db:
     container_name: xnat-db
+    image: xnat-db
     build: ./postgres
+    environment:
+      POSTGRES_PASSWORD: ${XNAT_DATASOURCE_ADMIN_PASSWORD}
     expose:
       - "5432"
     volumes:
@@ -103,6 +108,7 @@ services:
 
   orthanc:
     container_name: xnat-orthanc
+    image: xnat-orthanc
     build:
       context: ./orthanc
       args:
