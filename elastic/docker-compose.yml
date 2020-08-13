@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+
+  xnat-elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    container_name: xnat-elastic
+    networks: [xnat-services]
+    ports:
+      - 9200:9200
+    volumes:
+      - ./elastic-data/data:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  xnat-kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.1
+    container_name: xnat-kibana
+    depends_on: [xnat-elastic]
+    networks: [xnat-services]
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://xnat-elastic:9200
+      ELASTICSEARCH_HOSTS: http://xnat-elastic:9200
+
+  xnat-filebeat:
+    image: docker.elastic.co/beats/filebeat:7.8.1
+    container_name: xnat-filebeat
+    depends_on: [xnat-kibana]
+    networks: [xnat-services]
+    user: root
+    volumes:
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./elastic/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./xnat-data/logs:/var/log/xnat:ro
+      - ./tomcat-data/logs:/var/log/tomcat:ro
+      - ./activemq-data/logs:/var/log/activemq
+      - ./postgres-data/logs:/var/log/postgresql
+      - ./traefik-data/logs:/var/log/traefik
+
