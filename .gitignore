@@ -14,9 +14,13 @@ gradle.properties
 # Ignore log and env files, as well as mounted data folders and plugin folders.
 *.log
 *-data/
+xnat/auth
 xnat/plugins
-
 xnat/webapps
+
+# Archive is for storing different versions of plugins and what not
+archive/
+haproxy/certs/
 
 *.env
 !default.env
