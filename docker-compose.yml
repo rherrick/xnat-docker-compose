@@ -45,7 +45,7 @@ services:
     depends_on:
       - xnat-db
     environment:
-      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=true
+      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=true
       - XNAT_HOME=${XNAT_HOME}
 
   xnat-web-2:
@@ -73,7 +73,7 @@ services:
       - xnat-db
       - xnat-web-1
     environment:
-      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=false
+      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=false
       - XNAT_HOME=${XNAT_HOME}
 
   xnat-web-3:
@@ -101,7 +101,7 @@ services:
       - xnat-db
       - xnat-web-2
     environment:
-      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=false
+      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=false
       - XNAT_HOME=${XNAT_HOME}
 
   xnat-web-4:
@@ -129,7 +129,7 @@ services:
       - xnat-db
       - xnat-web-3
     environment:
-      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=false
+      - CATALINA_OPTS=-Xms${XNAT_MIN_HEAP} -Xmx${XNAT_MAX_HEAP} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -Dxnat.home=${XNAT_HOME} -Dxnat.is_primary_node=false
       - XNAT_HOME=${XNAT_HOME}
 
   xnat-activemq:
